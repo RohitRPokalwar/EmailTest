@@ -1,40 +1,29 @@
 const express = require('express');
 const nodemailer = require('nodemailer');
 const dotenv = require('dotenv');
-const cors = require('cors');
 
-// Load environment variables from .env file
 dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT || 8080;  // Listen on port 8080
+app.use(express.json());  // Make sure to use this to parse JSON request bodies
 
-// Middleware
-app.use(cors());
-app.use(express.json());
-
-// Home route
-app.get('/', (req, res) => {
-    res.send('Email Test App is Running 🚀');
-});
-
-// Send Email route
+// POST route for sending emails
 app.post('/send-email', async (req, res) => {
     const { to, subject, text } = req.body;
 
     try {
-        // Create a transporter using SMTP
+        // Create transporter using SMTP configuration
         const transporter = nodemailer.createTransport({
             host: process.env.EMAIL_HOST,
             port: process.env.EMAIL_PORT,
-            secure: false, // true for port 465, false for 587
+            secure: false,  // false for 587, true for 465
             auth: {
                 user: process.env.EMAIL_USER,
-                pass: process.env.EMAIL_PASS,
+                pass: process.env.EMAIL_PASS
             },
         });
 
-        // Email options
+        // Define email options
         const mailOptions = {
             from: process.env.EMAIL_USER,
             to,
@@ -42,7 +31,7 @@ app.post('/send-email', async (req, res) => {
             text,
         };
 
-        // Send the email
+        // Send email
         await transporter.sendMail(mailOptions);
         res.status(200).json({ message: 'Email sent successfully ✅' });
     } catch (error) {
@@ -51,7 +40,8 @@ app.post('/send-email', async (req, res) => {
     }
 });
 
-// Start the server
+// Start the server on the PORT specified
+const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {
-    console.log(`🚀 Server running on port ${PORT}`);
+    console.log(`Server running on port ${PORT}`);
 });
