@@ -2,10 +2,13 @@ const express = require('express');
 const nodemailer = require('nodemailer');
 const dotenv = require('dotenv');
 
+// Load environment variables from .env file
 dotenv.config();
 
 const app = express();
-app.use(express.json());  // Make sure to use this to parse JSON request bodies
+
+// Middleware to parse JSON bodies
+app.use(express.json());
 
 // POST route for sending emails
 app.post('/send-email', async (req, res) => {
@@ -16,10 +19,10 @@ app.post('/send-email', async (req, res) => {
         const transporter = nodemailer.createTransport({
             host: process.env.EMAIL_HOST,
             port: process.env.EMAIL_PORT,
-            secure: false,  // false for 587, true for 465
+            secure: false,  // Use 'true' for port 465, 'false' for 587
             auth: {
                 user: process.env.EMAIL_USER,
-                pass: process.env.EMAIL_PASS
+                pass: process.env.EMAIL_PASS,
             },
         });
 
@@ -40,7 +43,7 @@ app.post('/send-email', async (req, res) => {
     }
 });
 
-// Start the server on the PORT specified
+// Start the server
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
