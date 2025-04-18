@@ -1,0 +1,19 @@
+# Node modules
+node_modules/
+
+# Env variables
+.env
+
+# Logs
+logs
+*.log
+npm-debug.log*
+
+# OS generated
+.DS_Store
+Thumbs.db
+
+# Vercel / Railway / Netlify local configs
+.vercel
+.netlify
+.railway
